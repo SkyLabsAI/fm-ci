@@ -25,6 +25,25 @@ monorepo_parent=../../../..
 docker_build_folder=docker-opam-release
 ROCQ_LOG_PREFIX=bluerock
 
+# Call with image basename (full name - version) as 1st argument
+# Call with image full name $@ as 2nd argument
+define docker_opts
+endef
+# TODO: to use fancier docker caching, replace with something like this:
+# ifeq ($(CI),true)
+# define docker_opts
+# 	--load --push \
+# 	--cache-from type=registry,ref=$(DOCKER_REPO):$1-cache \
+# 	--cache-to type=registry,ref=$(DOCKER_REPO):$1-cache,mode=max
+# endef
+# else
+# define docker_opts
+# endef
+# endif
+# Or maybe, use $2-cache as name instead of $1-cache:
+#	--cache-from type=registry,ref=$(DOCKER_REPO):$2-cache \
+#	--cache-to type=registry,ref=$(DOCKER_REPO):$2-cache,mode=max
+
 define opam-img-target
 	@echo "[DOCKER] Building $@ from $<"
 	$(Q)cd $(monorepo_parent)/$(docker_build_folder); \
@@ -32,6 +51,7 @@ define opam-img-target
 		--platform linux/amd64 \
 		-f Dockerfile-opam-release \
 		-t $(DOCKER_REPO):$@ \
+		$(call docker_opts,$@) \
 		--build-arg BASE_IMAGE=$(DOCKER_REPO):$< \
 		--build-arg ROCQ_LOG_PREFIX=$(ROCQ_LOG_PREFIX) \
 		--build-arg OPAM_PACKAGES='opam pin | $1' \
