@@ -27,22 +27,16 @@ ROCQ_LOG_PREFIX=bluerock
 
 # Call with image basename (full name - version) as 1st argument
 # Call with image full name $@ as 2nd argument
+ifeq ($(CI),true)
+define docker_opts
+	--load --push \
+	--cache-from type=registry,ref=$(DOCKER_REPO):$1-cache \
+	--cache-to type=registry,ref=$(DOCKER_REPO):$1-cache,mode=max
+endef
+else
 define docker_opts
 endef
-# TODO: to use fancier docker caching, replace with something like this:
-# ifeq ($(CI),true)
-# define docker_opts
-# 	--load --push \
-# 	--cache-from type=registry,ref=$(DOCKER_REPO):$1-cache \
-# 	--cache-to type=registry,ref=$(DOCKER_REPO):$1-cache,mode=max
-# endef
-# else
-# define docker_opts
-# endef
-# endif
-# Or maybe, use $2-cache as name instead of $1-cache:
-#	--cache-from type=registry,ref=$(DOCKER_REPO):$2-cache \
-#	--cache-to type=registry,ref=$(DOCKER_REPO):$2-cache,mode=max
+endif
 
 define opam-img-target
 	@echo "[DOCKER] Building $@ from $<"
