@@ -38,15 +38,15 @@ persisted reliably, while the rest will disappear easily on upgrades.
 ## The Contents of the Image
 
 The image contains the following:
-- `rocq-bluerock-cpp-demo` example files demonstrating various features of the system
-- `rocq-bluerock-cpp-stdlib` specifications of the libc++ standard library
+- `rocq-skylabs-cpp-demo` example files demonstrating various features of the system
+- `rocq-skylabs-cpp-stdlib` specifications of the libc++ standard library
 - `fm-docs/sphinx/_build/html/` documentation
 
 ## First Example
 
 We suggest reading bits of the documentation if you are not familiar with separation
 logic. When you're ready to explore the examples, we recommend getting started with
-`rocq-bluerock-cpp-demo/proof/basic/main_cpp_proof.v` which contains some proofs of
+`rocq-skylabs-cpp-demo/proof/basic/main_cpp_proof.v` which contains some proofs of
 particularly simple C++ functions.
 
 ### Stepping through fm-docs
@@ -59,15 +59,15 @@ cd fm-docs; ./core-build.sh
 ## Experiment on Your Own
 
 The easiest way to experiment with your own code is to create a new directory in
-`rocq-bluerock-cpp-demo/proof` and to put your code inside of it. Note that the demo
+`rocq-skylabs-cpp-demo/proof` and to put your code inside of it. Note that the demo
 infrastructure is not set up to pass special command line options to the BlueRock
 tools, but you can use the standard library.
 
 After you do this, you need to re-generate the build setup by running:
 
 ```sh
-rocq-bluerock-cpp-demo/proof$ ./dune-gen.sh
-rocq-bluerock-cpp-demo/proof$ dune b
+rocq-skylabs-cpp-demo/proof$ ./dune-gen.sh
+rocq-skylabs-cpp-demo/proof$ dune b
 ```
 
 This script will create build infrastructure to automatically build any .cpp or .hpp files

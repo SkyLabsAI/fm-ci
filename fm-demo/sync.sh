@@ -36,17 +36,17 @@ cd ${target}
 
 # Sync our skeleton, and preserve demos
 # Getting ${exclusions} correct is optional but reduces noise/extra work when rerunning the script
-exclusions="--exclude rocq-bluerock-cpp-demo --exclude rocq-bluerock-cpp-stdlib --exclude flags --exclude docker --exclude ${docker_target_name} --exclude _build"
+exclusions="--exclude rocq-skylabs-cpp-demo --exclude rocq-skylabs-cpp-stdlib --exclude flags --exclude docker --exclude ${docker_target_name} --exclude _build"
 rsync -avc --copy-unsafe-links --delete ${exclusions} ${skeleton_path}/ ${target}/ "$@"
 
 # Package our demos
-rsync -avc --delete --delete-excluded ${BHV}/fmdeps/cpp2v/rocq-bluerock-cpp-demo . "$@"
-#rsync -avc --delete --delete-excluded --exclude theories ${BHV}/fmdeps/cpp2v/rocq-bluerock-cpp-stdlib . "$@"
-rsync -avc --delete --delete-excluded ${BHV}/fmdeps/cpp2v/rocq-bluerock-cpp-stdlib . "$@"
+rsync -avc --delete --delete-excluded ${BHV}/fmdeps/cpp2v/rocq-skylabs-cpp-demo . "$@"
+#rsync -avc --delete --delete-excluded --exclude theories ${BHV}/fmdeps/cpp2v/rocq-skylabs-cpp-stdlib . "$@"
+rsync -avc --delete --delete-excluded ${BHV}/fmdeps/cpp2v/rocq-skylabs-cpp-stdlib . "$@"
 rsync -avc --delete --delete-excluded ${BHV}/fmdeps/cpp2v/flags/ flags/ "$@"
-ln -sf ../../cpp2v-dune-gen.sh rocq-bluerock-cpp-demo/proof/
-ln -sf ../../cpp2v-dune-gen.sh rocq-bluerock-cpp-stdlib/theories/
-ln -sf ../../cpp2v-dune-gen.sh rocq-bluerock-cpp-stdlib/tests/
+ln -sf ../../cpp2v-dune-gen.sh rocq-skylabs-cpp-demo/proof/
+ln -sf ../../cpp2v-dune-gen.sh rocq-skylabs-cpp-stdlib/theories/
+ln -sf ../../cpp2v-dune-gen.sh rocq-skylabs-cpp-stdlib/tests/
 
 # Generate CoqProject
 cat ${BHV}/fmdeps/fm-ci/fm-demo/_CoqProject.flags > _CoqProject
