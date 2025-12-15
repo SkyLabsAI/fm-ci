@@ -6,6 +6,7 @@ This tarball contains a binary release of the BlueRock formal verification tools
 The image is provided for **evaluation purposes** only. It may not be re-distributed.
 Use of this image for production software is requires a separate license from BlueRock.
 Contact [support@bluerock.io](mailto:support@bluerock.io).
+TODO UPDATE
 
 ## Requirements
 - Docker

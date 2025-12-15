@@ -1,6 +1,7 @@
 #!/bin/bash
 
 DUNE_WORKDIR="${HOME}/dune_workdir"
+# TODO outdated
 NFS_SERVER="fm-nfs-server.bluerock.nf"
 NFS_SHARE="/var/cache/rsync_fm_cache/"
 MOUNT_POINT="${DUNE_WORKDIR}/dune_nfs"
