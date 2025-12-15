@@ -110,7 +110,7 @@ All release-related commands support overriding the Docker image tag via the
 
 ### Packaging the Image as a Tarball
 
-To package the image as `bluerock-fm-release-$VERSION.tar.gz`, you first need to
+To package the image as `skylabs-fm-release-$VERSION.tar.gz`, you first need to
 build/download the image with `make build-release` or `make pull-release`, then run:
 
 ```sh
@@ -124,7 +124,7 @@ To display `$VERSION`, run `make ver-release`.
 
 To load the image, run either `make unpack-release` or
 ```sh
-docker load -i bluerock-fm-release-$VERSION.tar.gz
+docker load -i skylabs-fm-release-$VERSION.tar.gz
 ```
 
 ## Produced Images

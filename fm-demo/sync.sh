@@ -18,9 +18,9 @@ target_parent="$1"
 shift
 
 release_ver=$(make -C ${docker_path} ver-release)
-docker_name=bluerock-fm-release-${release_ver}.tar.gz
-docker_target_name=bluerock-fm-release.tar.gz
-target_dir_name=bluerock-fm-demo-${release_ver}
+docker_name=skylabs-fm-release-${release_ver}.tar.gz
+docker_target_name=skylabs-fm-release.tar.gz
+target_dir_name=skylabs-fm-demo-${release_ver}
 target=${target_parent}/${target_dir_name}
 target_tarball=${target}.tar.gz
 # Path inside container -- chosen to match VsCode one
@@ -36,17 +36,17 @@ cd ${target}
 
 # Sync our skeleton, and preserve demos
 # Getting ${exclusions} correct is optional but reduces noise/extra work when rerunning the script
-exclusions="--exclude rocq-bluerock-cpp-demo --exclude rocq-bluerock-cpp-stdlib --exclude flags --exclude docker --exclude ${docker_target_name} --exclude _build"
+exclusions="--exclude rocq-skylabs-cpp-demo --exclude rocq-skylabs-cpp-stdlib --exclude flags --exclude docker --exclude ${docker_target_name} --exclude _build"
 rsync -avc --copy-unsafe-links --delete ${exclusions} ${skeleton_path}/ ${target}/ "$@"
 
 # Package our demos
-rsync -avc --delete --delete-excluded ${BHV}/fmdeps/cpp2v/rocq-bluerock-cpp-demo . "$@"
-#rsync -avc --delete --delete-excluded --exclude theories ${BHV}/fmdeps/cpp2v/rocq-bluerock-cpp-stdlib . "$@"
-rsync -avc --delete --delete-excluded ${BHV}/fmdeps/cpp2v/rocq-bluerock-cpp-stdlib . "$@"
+rsync -avc --delete --delete-excluded ${BHV}/fmdeps/cpp2v/rocq-skylabs-cpp-demo . "$@"
+#rsync -avc --delete --delete-excluded --exclude theories ${BHV}/fmdeps/cpp2v/rocq-skylabs-cpp-stdlib . "$@"
+rsync -avc --delete --delete-excluded ${BHV}/fmdeps/cpp2v/rocq-skylabs-cpp-stdlib . "$@"
 rsync -avc --delete --delete-excluded ${BHV}/fmdeps/cpp2v/flags/ flags/ "$@"
-ln -sf ../../cpp2v-dune-gen.sh rocq-bluerock-cpp-demo/proof/
-ln -sf ../../cpp2v-dune-gen.sh rocq-bluerock-cpp-stdlib/theories/
-ln -sf ../../cpp2v-dune-gen.sh rocq-bluerock-cpp-stdlib/tests/
+ln -sf ../../cpp2v-dune-gen.sh rocq-skylabs-cpp-demo/proof/
+ln -sf ../../cpp2v-dune-gen.sh rocq-skylabs-cpp-stdlib/theories/
+ln -sf ../../cpp2v-dune-gen.sh rocq-skylabs-cpp-stdlib/tests/
 
 # Generate CoqProject
 cat ${BHV}/fmdeps/fm-ci/fm-demo/_CoqProject.flags > _CoqProject
