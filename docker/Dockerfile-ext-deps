@@ -45,7 +45,7 @@ RUN set -x \
   && echo "/home/coq/.local/bin" \
   |  bash -c "sh <(curl -fsSL https://raw.githubusercontent.com/ocaml/opam/master/shell/install.sh)"
 
-COPY files/_br-fm-deps.opam /tmp/files/br-fm-deps.opam
+COPY files/_skylabs-deps.opam /tmp/files/skylabs-deps.opam
 COPY files/opam-clean /tmp/files/opam-clean
 
 RUN set -x \
@@ -53,5 +53,5 @@ RUN set -x \
  && opam repo add --dont-select archive "git+https://github.com/ocaml/opam-repository-archive" \
  && opam switch create --empty --repositories=default,archive main \
  && opam update -y \
- && opam install -y /tmp/files/br-fm-deps.opam \
+ && opam install -y /tmp/files/skylabs-deps.opam \
  && /tmp/files/opam-clean

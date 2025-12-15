@@ -1,5 +1,5 @@
 .PHONY: fm-$(BR_FMDEPS_VERSION)-ext-deps
-fm-$(BR_FMDEPS_VERSION)-ext-deps: fm-$(BR_FMDEPS_VERSION)-os Dockerfile-ext-deps files/_br-fm-deps.opam
+fm-$(BR_FMDEPS_VERSION)-ext-deps: fm-$(BR_FMDEPS_VERSION)-os Dockerfile-ext-deps files/_skylabs-deps.opam
 	@echo "[DOCKER] Building $@"
 	$(Q)docker buildx build \
 		--platform linux/amd64 \
@@ -11,8 +11,8 @@ fm-$(BR_FMDEPS_VERSION)-ext-deps: fm-$(BR_FMDEPS_VERSION)-os Dockerfile-ext-deps
 DOCKER_BUILD_TARGETS += fm-$(BR_FMDEPS_VERSION)-ext-deps
 DOCKER_PUSH_TARGETS += push-fm-$(BR_FMDEPS_VERSION)-ext-deps
 
-GEN_FILES += files/_br-fm-deps.opam
-files/_br-fm-deps.opam: ../fm-deps/br-fm-deps.opam
+GEN_FILES += files/_skylabs-deps.opam
+files/_skylabs-deps.opam: ../../../dev/opam-deps/skylabs-deps.opam
 	$(Q)cp $< $@
 
 .PHONY: fm-ext-deps
