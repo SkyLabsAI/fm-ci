@@ -18,9 +18,9 @@ target_parent="$1"
 shift
 
 release_ver=$(make -C ${docker_path} ver-release)
-docker_name=bluerock-fm-release-${release_ver}.tar.gz
-docker_target_name=bluerock-fm-release.tar.gz
-target_dir_name=bluerock-fm-demo-${release_ver}
+docker_name=skylabs-fm-release-${release_ver}.tar.gz
+docker_target_name=skylabs-fm-release.tar.gz
+target_dir_name=skylabs-fm-demo-${release_ver}
 target=${target_parent}/${target_dir_name}
 target_tarball=${target}.tar.gz
 # Path inside container -- chosen to match VsCode one
