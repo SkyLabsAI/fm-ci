@@ -45,3 +45,6 @@ RUN mkdir -p -v /home/coq/bin /home/coq/.local/bin
 
 # config
 ENV PATH="/home/coq/.local/bin:${PATH}"
+
+# Ensures Unicode characters are printed correctly in `git diff` output
+ENV LC_ALL=C.utf8
