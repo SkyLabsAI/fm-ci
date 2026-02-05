@@ -8,6 +8,6 @@
  (_
   (flags :standard %{read-lines:flags/ocamlc})
   (ocamlopt_flags :standard -O3 -unbox-closures)
-  (coq
+  (rocq
    (flags
     (:standard %{read-lines:flags/coqc})))))
