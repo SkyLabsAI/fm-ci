@@ -67,6 +67,8 @@ else
   echo "Docker image missing! Building source-only tarball."
   echo "If you want to change this, run the following then re-run this script:"
   echo "  make -C ../docker pack-release"
+  echo "TODO these instructions are wrong"
+  exit 1
 fi
 
 cd ${target_parent}

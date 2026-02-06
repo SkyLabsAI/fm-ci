@@ -6,6 +6,8 @@ to produce a Docker release image at the appropriate release tag,
 `registry.gitlab.com/bedrocksystems/formal-methods/fm-ci:fm-opam-release-latest`.
 2. Make a Docker release image available
 You can use `make build-release` or `make pull-release`; refer to `../docker/README.md`.
+
+# TODO removed
 2. Package that release image with `make pack-release`.
 3. Run
 ```
