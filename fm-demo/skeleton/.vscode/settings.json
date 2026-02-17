@@ -1,5 +1,0 @@
-{
-    "makefile.configureOnOpen": false,
-    "coqtop.binPath": "/home/coq/.local/bin",
-    "vscoq.path": "dune exec -- vscoqtop",
-}
