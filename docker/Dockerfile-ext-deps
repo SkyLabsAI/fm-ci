@@ -1,0 +1,57 @@
+# BSD 3-Clause License (from https://github.com/coq-community/docker-base)
+# (Not much is left from the original though.)
+# https://github.com/coq-community/docker-base/blob/master/base/bare/Dockerfile
+# https://github.com/coq-community/docker-base/blob/master/LICENSE
+
+ARG BASE_IMAGE=ghcr.io/skylabsai/workspace:fm-os
+FROM $BASE_IMAGE
+
+### Install system packages ##################################################
+
+USER root
+ENV DEBIAN_FRONTEND=noninteractive
+
+# hadolint ignore=DL3008
+RUN apt-get update -y -q \
+ && apt-get install -y -q --no-install-recommends autoconf automake \
+      libgmp-dev \
+      rlwrap \
+      ninja-build \
+      libffi-dev zlib1g-dev cmake linux-perf \
+      bear \
+ && apt-get clean \
+ && rm -rf /var/lib/apt/lists/*
+
+# Ensure a /usr/bin/perf binary exists; we bind-mount over this the correct
+# version from the host.
+RUN touch /usr/bin/perf
+
+USER coq
+# Dune config
+COPY --chown=coq files/dune-config /home/coq/.config/dune/config
+RUN git config --global --add safe.directory '*'
+
+### Install Rust
+
+RUN curl https://sh.rustup.rs -sSf | sh -s -- -y
+
+### Prepare the opam switch ##################################################
+
+ENV OPAM_VERSION="2.4.1"
+ENV NJOBS="6"
+ENV OPAMPRECISETRACKING="1"
+
+RUN set -x \
+  && echo "/home/coq/.local/bin" \
+  |  bash -c "sh <(curl -fsSL https://raw.githubusercontent.com/ocaml/opam/master/shell/install.sh)"
+
+COPY files/_skylabs-deps.opam /tmp/files/skylabs-deps.opam
+COPY files/opam-clean /tmp/files/opam-clean
+
+RUN set -x \
+ && opam init --bare --disable-sandboxing --shell-setup \
+ && opam repo add --dont-select archive "git+https://github.com/ocaml/opam-repository-archive" \
+ && opam switch create --empty --repositories=default,archive main \
+ && opam update -y \
+ && opam install -y /tmp/files/skylabs-deps.opam \
+ && /tmp/files/opam-clean

@@ -1,0 +1,152 @@
+FM CI Docker Images
+===================
+
+## WARNING
+
+Be extremely careful when overwriting existing tags in the gitlab container
+registry, as this can obviously break things. You should typically always
+push new tags, unless you know exactly what you are doing.
+
+## Logging Into our Container Registry
+
+To log into our GitLab container registry, you can run:
+```
+make login
+```
+If it is the first time you log in, you will be prompted for your GitLab user
+name, as well as an API token (that you can generate from the GitLab web UI).
+Using scopes `api, read_api, read_registry, write_registry` is sufficient.
+
+You can run `make logout` to log out, and `make clean-all` to delete your user
+name and token from the file system (this is useful if you made a mistake, or
+if your token expired).
+
+## Configuration Change for New Versions of the CI Images
+
+To generate a new set of CI image, you need to:
+1. Updating the `BR_FMDEPS_VERSION` variable in the `Makefile`.
+3. Optionally change other `Makefile` variables (LLVM version, ...)
+
+The following variables control what combinations of LLVM are
+used in the produced CI images:
+- `LLVM_VERSIONS` lists LLVM versions for which an image is generated.
+- `LLVM_MAIN_VERSION` selects the main LLVM version (among the above).
+
+## Build and Running
+
+To rebuild all images, simply run:
+```
+make build
+```
+If you only want to rebuild a specific image, you can use
+```
+make list-targets
+```
+to get a list of available `Makefile` targets. The list also includes targets
+for running (prefixed with `run-`) and pushing (prefixed with `push-`) images.
+
+## Testing images in CI
+
+Open `fmdeps/ci/.github/workflows/main.yml`, find the `jobs.ci-config` section,
+and update the `env.docker_img_ver` environment variable, and possibly the
+`outputs.llvm_main_ver` if that changed.
+
+## Cleaning
+
+`make clean` will remove artifacts, `make clean-token` will remove login
+credentials, `make clean-all` will remove both.
+
+## Pushing Tags
+
+To push all tags (this implies building), run:
+```
+make push
+```
+Note that by default the commands are not run. See the output to know how to
+actually push.
+
+Pushing images with the `BR_FMDEPS_VERSION` currently used in CI (especially
+`main` branches) will affect new pipelines, so don't do it.
+
+To override default tags, call with `TAG_DEFAULTS=yes`.
+
+**Note:** when you are setting up a new image version, with a distinct value
+for `BR_FMDEPS_VERSION`, pushing is perfectly safe. In case of mistake in the
+images configuration, you can safely push again.
+
+You can also push a single image if you want, using the corresponding target
+from the output of
+```
+make list-targets
+```
+
+## Process for Setting-Up New CI Images
+
+To set up new CI images, e.g., with new FM dependencies, you need to:
+ 1. Update the `Makefile` configuration as instructed above.
+ 2. Update the OCaml dependencies in `fm-ci/fm-deps/dune-project`.
+ 3. Run `make build` to confirm that images build fine.
+ 4. Try running some of the images, to check that they work as expected.
+ 5. Run `make push`, confirm the commands look fine, and follow instructions.
+ 6. Update `docker_img_ver` and `llvm_main_ver` in `fmdeps/ci/.github/workflows/main.yml`.
+ 7. Make a `ci` PR and any associated PRs for fixes.
+ 8. When MRs are ready and approved, take an atomic lock, and then:
+    - Merge all your non-`ci` MRs.
+    - Merge your `ci` MR and confirm that CI passes.
+    - Release the atomic lock.
+
+To add an LLVM version, also update the hardcoded list in `gen.ml`.
+
+## Public Release Image
+
+The public release image setup is also covered by the `Makefile`. The relevant
+targets are: `make build-release`, `make run-release` and `make push-release`.
+The latter should in principle not be used directly, since we have a scheduled
+job that builds and publishes the image daily. It is however useful to build
+and run the release image locally when working on improvements and debugging.
+
+All release-related commands support overriding the Docker image tag via the
+`RELEASE_TAG` environment variable.
+
+### Packaging the Image as a Tarball
+
+To package the image as `skylabs-fm-release-$VERSION.tar.gz`, you first need to
+build/download the image with `make build-release` or `make pull-release`, then run:
+
+```sh
+make pack-release
+```
+
+This will display a progress bar if `pv` is installed.
+
+To display `$VERSION`, run `make ver-release`.
+
+
+To load the image, run either `make unpack-release` or
+```sh
+docker load -i skylabs-fm-release-$VERSION.tar.gz
+```
+
+## Produced Images
+
+All image tags use `fm-` or `fm-$(VER)-` as common prefix. Tags:
+
+- os: base operating system + Python uv + git, Make etc
+- docker: os + docker CLI binaries
+- ext-deps: os + Rust, opam, more Python
+- ext-deps-llvm-$(llvm_ver): ext-deps + llvm $(llvm_ver)
+- default = ext-deps-llvm-$(LLVM_MAIN_VERSION)
+
+Planned (not fully working yet):
+- stage1: ext-deps + fmdeps/vendored OPAM packages
+- stage2: stage1 + auto + everything not needing clang
+- stage2-llvm-$(llvm_ver): stage2 + llvm $(llvm_ver)
+- stage3-release: stage2-llvm-$(LLVM_MAIN_VERSION) + cpp2v + C++ stdlib specs + scaffold
+- stage4-sl-release: stage3-release + skylabs-fm
+
+Currently:
+- (old) release: ext-deps-llvm-$(LLVM_MAIN_VERSION) + fmdeps/{vendored, BRiCk, auto}
+
+Planned:
+- (new) release = stage3-release
+- sl-release: stage4-sl-release
